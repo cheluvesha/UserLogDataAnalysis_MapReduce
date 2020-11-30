@@ -20,7 +20,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   var days = 6
   var one = 1
   var minutes = 5
-  var idleLimit =60
+  var idleLimit = 6
   var zero = 0
 
   /***
