@@ -21,7 +21,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   var days = 6
   var one = 1
   var minutes = 5
-  var idleLimit =60
+  var idleLimit = 6
   var zero = 0
 
   /***
@@ -43,7 +43,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   override
   def reduce(key: Text, values: lang.Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, Text]#Context): Unit = {
     val keyData = key.toString.split(":")
-    val keyName = keyData(0) + ":" + keyData(1)
+    val keyName = keyData(zero) + ":" + keyData(one)
     var timeData = zero
     for(value <- values) {
       timeData = value.get()
