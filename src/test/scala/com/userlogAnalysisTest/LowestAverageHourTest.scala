@@ -1,6 +1,6 @@
 package com.userlogAnalysisTest
 
-import java.util
+
 import com.lowestAverageHour.{LowestAverageHourMapper, LowestAverageHourReducer}
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mrunit.mapreduce.{MapDriver, MapReduceDriver, ReduceDriver}
@@ -26,9 +26,6 @@ class LowestAverageHourTest extends FunSuite with BeforeAndAfter {
   val userDataKey2: String = "deepshukla292@gmail.com:2019-09-21: 09:20:01"
   val one = 1
   val zero = 0
-  val values: util.ArrayList[IntWritable] = new util.ArrayList[IntWritable]()
-  values.add(new IntWritable(15))
-  values.add(new IntWritable(15))
   val list: ListBuffer[Int] = ListBuffer[Int](1,0,0,0,0,0,1,0,0,0,0,0,0)
   var reducer: LowestAverageHourReducer = _
   var mapper: LowestAverageHourMapper = _
