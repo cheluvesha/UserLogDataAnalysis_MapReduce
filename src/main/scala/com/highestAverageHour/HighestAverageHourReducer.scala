@@ -1,10 +1,8 @@
 package com.highestAverageHour
 
 import java.lang
-
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapreduce.Reducer
-
 import scala.collection.JavaConversions._
 import scala.collection.immutable.ListMap
 import scala.collection.mutable
@@ -25,41 +23,53 @@ class HighestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   def reduce(key: Text, values: lang.Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, Text]#Context): Unit = {
     val keyData = key.toString.split(":")
     val keyName = keyData(0) + ":" + keyData(1)
+    var timeData = 0
+    for(value <- values) {
+      timeData = value.get()
+    }
     if (map.contains(keyName)) {
       val listData = map.get(keyName).orNull
-      for (value <- values) {
-        val newList = listData ++ List(value.get())
-        map.put(keyName, newList)
-      }
+      val newList = listData ++ List(timeData)
+      map.put(keyName, newList)
     }
     else {
-      map.put(keyName, ListBuffer())
+      map.put(keyName, ListBuffer(timeData))
     }
   }
 
   def checkForZeros(arrayMins: Array[Int]): Int = {
-    var zeroCount = 1
-    var countedZero = 0
-    var mins = 0
-    while (mins < arrayMins.length - 1) {
-      if ((arrayMins(mins) == 0) && (arrayMins(mins + 1) == 0 )) {
-        zeroCount += 1
-      }
-      else {
-        if(zeroCount >= 6){
-          countedZero += zeroCount
-          zeroCount = 1
+    try {
+      var zeroCount = 1
+      var countedZero = 0
+      var mins = 0
+      while (mins < arrayMins.length - 1) {
+        if ((arrayMins(mins) == 0) && (arrayMins(mins + 1) == 0 )) {
+          zeroCount += 1
         }
         else {
-          zeroCount = 1
+          if(zeroCount >= 6){
+            countedZero += zeroCount
+            zeroCount = 1
+          }
+          else {
+            zeroCount = 1
+          }
         }
+        mins += 1
       }
-      mins += 1
+      if(zeroCount >= 6) {
+        countedZero += zeroCount
+      }
+      countedZero
     }
-    if(zeroCount >= 6) {
-      countedZero += zeroCount
-    }
-    countedZero
+    catch {
+      case arrayIndex:ArrayIndexOutOfBoundsException =>
+        println(arrayIndex.printStackTrace())
+        throw new Exception("Array index out of Bound")
+      case exception: Exception =>
+        println(exception.printStackTrace())
+        throw new Exception("Something went wrong while checking for zeros")
+      }
   }
 
   def evaluateTime(key: String, durationData: ListBuffer[Int]): (String, Double) = {
@@ -67,7 +77,6 @@ class HighestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
       val keyName = key.split(":")
       val arrayMins = durationData.toArray
       val zeroCounted = checkForZeros(arrayMins)
-      println(key+"   "+zeroCounted)
       val overallMins = arrayMins.length * 5
       val totalMins = overallMins - (zeroCounted * 5).toDouble
       val hour: Double = totalMins / 60
@@ -76,8 +85,7 @@ class HighestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
     }
     catch {
       case ex:Exception =>
-        println(ex.printStackTrace())
-        throw  new Exception("")
+        throw  new Exception("Unable to evaluate time")
     }
   }
 
