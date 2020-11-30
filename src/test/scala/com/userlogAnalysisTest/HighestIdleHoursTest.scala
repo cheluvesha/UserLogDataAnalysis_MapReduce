@@ -6,7 +6,6 @@ import org.apache.hadoop.mrunit.mapreduce.{MapDriver, MapReduceDriver, ReduceDri
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import org.junit.runner.RunWith
 import org.powermock.modules.junit4.PowerMockRunner
-
 import scala.collection.mutable.ListBuffer
 
 
