@@ -19,8 +19,10 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   // mutable.LinkedHashMap[String, Double] - Stores UserID as Key and Hour as Value
   var avgTimeMap: mutable.LinkedHashMap[String, Double] = _
   var days = 0
-  val one = 1
-  val minute = 5
+  var one = 0
+  var minutes = 0
+  var idleLimit = 0
+  var zero = 0
 
   /***
    * setup method initializes instance variables before reduce() method executes
@@ -30,6 +32,10 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
     map = new mutable.LinkedHashMap[String, ListBuffer[Int]]()
     avgTimeMap = new mutable.LinkedHashMap[String, Double]
     days = 6
+    one = 1
+    minutes = 5
+    idleLimit = 6
+    zero = 0
   }
 
   /***
@@ -42,7 +48,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   def reduce(key: Text, values: lang.Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, Text]#Context): Unit = {
     val keyData = key.toString.split(":")
     val keyName = keyData(0) + ":" + keyData(1)
-    var timeData = 0
+    var timeData = zero
     for(value <- values) {
       timeData = value.get()
     }
@@ -63,14 +69,14 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
    */
   def checkForZeros(arrayMins: Array[Int]): Int = {
     var zeroCount = one
-    var countedZero = 0
-    var mins = 0
+    var countedZero = zero
+    var mins = zero
     while (mins < arrayMins.length - one) {
-      if ((arrayMins(mins) == 0) && (arrayMins(mins + 1) == 0 )) {
+      if ((arrayMins(mins) == zero) && (arrayMins(mins + one) == zero )) {
           zeroCount += one
         }
         else {
-          if(zeroCount >= 6){
+          if(zeroCount >= idleLimit){
             countedZero += zeroCount
             zeroCount = one
           }
@@ -80,7 +86,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
         }
       mins += one
     }
-    if(zeroCount >= 6) {
+    if(zeroCount >= idleLimit) {
       countedZero += zeroCount
     }
     countedZero
@@ -97,11 +103,11 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
       val keyName = key.split(":")
       val arrayMins = durationData.toArray
       val zeroCounted = checkForZeros(arrayMins)
-      val overallMins = arrayMins.length * minute
-      val totalMins = overallMins - (zeroCounted * minute).toDouble
+      val overallMins = arrayMins.length * minutes
+      val totalMins = overallMins - (zeroCounted * minutes).toDouble
       val hour: Double = totalMins / 60
       val roundedHours = BigDecimal(hour).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
-      (keyName(0), roundedHours)
+      (keyName(zero), roundedHours)
     }
     catch {
       case ex:Exception =>
@@ -120,9 +126,9 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
         val userData = evaluateTime(x._1, x._2)
         if(avgTimeMap.contains(userData._1)) {
           val time = avgTimeMap.getOrElse(userData._1,Double).asInstanceOf[Double]
-          val t = time + userData._2
+          val totalTime = time + userData._2
 
-          avgTimeMap.put(key = userData._1,value = t )
+          avgTimeMap.put(key = userData._1,value = totalTime )
         }
         else {
           avgTimeMap.put(userData._1, userData._2)
