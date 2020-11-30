@@ -1,7 +1,5 @@
 package com.userlogAnalysisTest
 
-import java.util
-
 import com.highestNoOfIdleHrs.{HighestNoOfIdleHoursMapper, HighestNoOfIdleHoursReducer}
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mrunit.mapreduce.{MapDriver, MapReduceDriver, ReduceDriver}
