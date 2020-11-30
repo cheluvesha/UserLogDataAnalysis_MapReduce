@@ -10,7 +10,7 @@ import org.apache.hadoop.mapreduce.Mapper
 class LowestAverageHourMapper extends Mapper[Object,Text,Text,IntWritable] {
   val outputKey = new Text()
   val one = 1
-
+  val zero = 0
   /***
    * Mapper method reads data and redirects to Reduce class as Key and Value Pair
    * @param key Object
@@ -27,11 +27,11 @@ class LowestAverageHourMapper extends Mapper[Object,Text,Text,IntWritable] {
     val mouseClicks: Double = userLogData(42).toDouble
     val engineerID: String = userLogData(40)
     outputKey.set(engineerID+":"+date+":"+time)
-    var num = 0
-    if((keyBoardHits >= 0) && (mouseClicks > 0)) {
+    var num = zero
+    if((keyBoardHits >= zero) && (mouseClicks > zero)) {
       num = one
     }
-    else if ((keyBoardHits > 0) && (mouseClicks >= 0)) {
+    else if ((keyBoardHits > zero) && (mouseClicks >= zero)) {
       num = one
     }
     context.write(outputKey,new IntWritable(num))

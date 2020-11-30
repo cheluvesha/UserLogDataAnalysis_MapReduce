@@ -14,11 +14,11 @@ import scala.collection.mutable.ListBuffer
 class HighestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   var map: mutable.LinkedHashMap[String, ListBuffer[Int]] = _
   var avgTimeMap: mutable.LinkedHashMap[String, Double] = _
-  var days = 0
-  var one = 0
+  var days = 6
+  var one = 1
   var zero = 0
-  var idleLimits = 0
-  var minutes = 0
+  var idleLimits = 6
+  var minutes = 5
 
   /***
    * setup method initializes instance variables before reduce() method executes
@@ -29,11 +29,6 @@ class HighestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
     map = new mutable.LinkedHashMap[String, ListBuffer[Int]]()
     // mutable.LinkedHashMap[String, Double] - Stores UserID as Key and Hour as Value
     avgTimeMap = new mutable.LinkedHashMap[String, Double]
-    days = 6
-    one = 1
-    zero = 0
-    idleLimits = 6
-    minutes = 5
   }
 
   /***
@@ -133,9 +128,8 @@ class HighestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
         val userData = evaluateTime(x._1, x._2)
         if(avgTimeMap.contains(userData._1)) {
           val time = avgTimeMap.getOrElse(userData._1,Double).asInstanceOf[Double]
-          val t = time + userData._2
-
-          avgTimeMap.put(key = userData._1,value = t )
+          val totalTime = time + userData._2
+          avgTimeMap.put(key = userData._1,value = totalTime )
         }
         else {
           avgTimeMap.put(userData._1, userData._2)
