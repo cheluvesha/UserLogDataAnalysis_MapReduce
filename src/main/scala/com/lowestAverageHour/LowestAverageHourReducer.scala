@@ -18,10 +18,10 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   var map: mutable.LinkedHashMap[String, ListBuffer[Int]] = _
   // mutable.LinkedHashMap[String, Double] - Stores UserID as Key and Hour as Value
   var avgTimeMap: mutable.LinkedHashMap[String, Double] = _
-  var days = 0
-  var one = 0
-  var minutes = 0
-  var idleLimit = 0
+  var days = 6
+  var one = 1
+  var minutes = 5
+  var idleLimit =60
   var zero = 0
 
   /***
@@ -31,11 +31,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
   override def setup(context: Reducer[Text, IntWritable, Text, Text]#Context): Unit = {
     map = new mutable.LinkedHashMap[String, ListBuffer[Int]]()
     avgTimeMap = new mutable.LinkedHashMap[String, Double]
-    days = 6
-    one = 1
-    minutes = 5
-    idleLimit = 6
-    zero = 0
+
   }
 
   /***
