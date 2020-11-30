@@ -3,7 +3,6 @@ package com.lowestAverageHour
 /***
  * Dependency Used Hadoop - client to perform MapReduce
  */
-
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
