@@ -1,6 +1,5 @@
 package com.userlogAnalysisTest
 
-import java.util
 import com.lowestAverageHour.{LowestAverageHourMapper, LowestAverageHourReducer}
 import org.apache.hadoop.io.{IntWritable, LongWritable, Text}
 import org.apache.hadoop.mrunit.mapreduce.{MapDriver, MapReduceDriver, ReduceDriver}
@@ -9,7 +8,11 @@ import org.junit.runner.RunWith
 import org.powermock.modules.junit4.PowerMockRunner
 import scala.collection.mutable.ListBuffer
 
-
+/***
+ * Test Class for LowestAverageHour
+ * class verifies mapper and reduce class methods
+ * Dependencies used Junit PowerMocker, Mockito-all-api, MRUnit and Scala Test
+ */
 @RunWith(classOf[PowerMockRunner])
 class LowestAverageHourTest extends FunSuite with BeforeAndAfter {
   var mapDriver: MapDriver[Object,Text,Text,IntWritable] = _
@@ -22,9 +25,6 @@ class LowestAverageHourTest extends FunSuite with BeforeAndAfter {
   val userDataKey2: String = "deepshukla292@gmail.com:2019-09-21: 09:20:01"
   val one = 1
   val zero = 0
-  val values: util.ArrayList[IntWritable] = new util.ArrayList[IntWritable]()
-  values.add(new IntWritable(15))
-  values.add(new IntWritable(15))
   val list: ListBuffer[Int] = ListBuffer[Int](1,0,0,0,0,0,1,0,0,0,0,0,0)
   var reducer: LowestAverageHourReducer = _
   var mapper: LowestAverageHourMapper = _
@@ -63,9 +63,15 @@ class LowestAverageHourTest extends FunSuite with BeforeAndAfter {
     val result = reducer.checkForZeros(list.toArray)
     assert(result === 6)
   }
+
   test("givenDataMustEvaluateTimeAndReturnMustEqualToActual") {
     val result = reducer.evaluateTime(userNameWithDate,list)
     assert(("iamnzm@outlook.com",0.58) === result)
   }
 
+  test("givenInputForMapperItMustProcessKeyValueAndReducerMustReturnValue") {
+    mapReduceDriver.addInput(new LongWritable(1), new Text(input1))
+    mapReduceDriver.addOutput(new Text("iamnzm@outlook.com"), new Text("  -  " + 0.01 + " Hours"))
+    mapReduceDriver.runTest()
+  }
 }
