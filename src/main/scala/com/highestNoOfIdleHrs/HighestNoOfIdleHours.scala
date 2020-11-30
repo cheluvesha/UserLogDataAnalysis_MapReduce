@@ -7,6 +7,11 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
+/***
+ * Map Reduce Driver Class
+ * Declares the Mapper and Reducer class
+ * Declares and Initializes File Input and Output Path
+ */
 object HighestNoOfIdleHours {
 
   def main(args: Array[String]): Unit = {
