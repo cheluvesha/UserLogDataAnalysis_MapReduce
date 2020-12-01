@@ -106,8 +106,7 @@ class LowestAverageHourReducer extends Reducer[Text,IntWritable,Text,Text] {
     }
     catch {
       case ex:Exception =>
-        println(ex.printStackTrace())
-        throw  new Exception("")
+        throw  new Exception("Unable to Process Time")
     }
   }
 
