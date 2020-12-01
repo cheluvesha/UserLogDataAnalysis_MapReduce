@@ -11,7 +11,4 @@ libraryDependencies += "org.mockito" % "mockito-all" % "1.9.0-rc1" % Test
 libraryDependencies += "org.powermock" % "powermock-module-junit4" % "1.4.12" % Test
 libraryDependencies += "org.powermock" % "powermock-api-mockito" % "1.4.12" % Test
 
-assemblyMergeStrategy in assembly := {
-  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-  case x => MergeStrategy.first
-}
+scapegoatVersion in ThisBuild := "1.3.8"
